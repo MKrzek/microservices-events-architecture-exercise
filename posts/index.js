@@ -14,7 +14,6 @@ app.get('/posts', (req, res)=>{
 
 
 app.post( '/posts', async ( req, res ) => {
-  console.log('here')
   const id = randomBytes( 4 ).toString( 'hex' );
   const { title } = req.body;
   posts[ id ] = { id, title };
@@ -23,10 +22,9 @@ app.post( '/posts', async ( req, res ) => {
 } )
 
 app.post( '/events', ( req, res ) => {
-  console.log( 'recevivedd event', req.body.type )
   res.send({})
 })
 
 app.listen(4000, ()=>{
-  console.log('listening')
+  console.log('Posts service is up')
 })

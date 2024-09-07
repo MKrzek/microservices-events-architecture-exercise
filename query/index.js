@@ -1,9 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { randomBytes } from 'crypto';
 import cors from 'cors'
-import axios from 'axios'
-
 
 const app = express()
 app.use( bodyParser.json() )
@@ -11,32 +8,37 @@ app.use( cors() );
 
 const posts = {}
 
-
 app.get( '/posts', ( req, res ) => {
    res.send(posts)
 } )
 
 app.post( '/events', ( req, res ) => {
-  const { type, data } = req.body
+  const { type, data } = req.body;
 
 
   if ( type === 'PostCreated' ) {
-    const { id, title } = data
-    posts[id]={id, title, comments:[]}
-
+    const { id, title } = data;
+    posts[ id ] = { id, title, comments: [] };
   }
+
   if ( type === 'CommentCreated' ) {
-    const { id, content, postId } = data
+    const { id, content, postId, status } = data;
 
-    const post = posts[ postId ]
-    post.comments.push({id, content})
-
+    const post = posts[ postId ];
+    post.comments.push( { id, content, status } );
   }
-   console.log('posts', posts)
+
+  if ( type === 'CommentUpdated' ) {
+    const { id, postId, status, content } = data
+    const post = posts[ postId ]
+    const comment = post.comments.find( comment => comment.id === id )
+    comment.status = status
+    comment.content = content
+  }
   res.send({})
 })
 
 
 app.listen( 4002, () => {
-  console.log('query service on')
+  console.log('Query service is up')
 })
